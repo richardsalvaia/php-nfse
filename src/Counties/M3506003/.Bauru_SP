@@ -1,0 +1,8 @@
+Bauru SP
+IBGE: 3506003
+SIAF: 4633
+Padrão: ABRASF (2.03)
+SOAP Version: 1.1
+URL Homologação: http://tbhomologacao.bauru.sp.gov.br/services/Abrasf23?wsdl
+URL Produção: http://tbhomologacao.bauru.sp.gov.br/services/Abrasf23?wsdl
+xmlns: http://www.abrasf.org.br/nfse.xsd
