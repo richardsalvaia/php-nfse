@@ -39,6 +39,8 @@ class Rps extends RpsBase
     const REGIME_ESTIMATIVA = 2;
     const REGIME_SOCIEDADE = 3;
     const REGIME_COOPERATIVA = 4;
+    const REGIME_MEI = 5;
+    const REGIME_EPPME = 6;
 
     const NATUREZA_INTERNA = 1; //Tributação no município
     const NATUREZA_EXTERNA = 2;  //Tributação fora do município
@@ -454,12 +456,12 @@ class Rps extends RpsBase
     public function regimeEspecialTributacao($value = self::REGIME_MICROEMPRESA, $campo = null)
     {
         if (!$campo) {
-            $msg = "O regime de tributação deve estar entre 1 e 4.";
+            $msg = "O regime de tributação deve estar entre 1 e 6.";
         } else {
-            $msg = "O item '$campo' deve estar entre 1 e 4. Informado: '$value'";
+            $msg = "O item '$campo' deve estar entre 1 e 6. Informado: '$value'";
         }
 
-        if (!Validator::numeric()->intVal()->between(1, 4)->validate($value)) {
+        if (!Validator::numeric()->intVal()->between(1, 6)->validate($value)) {
             throw new \InvalidArgumentException($msg);
         }
         $this->infRegimeEspecialTributacao = $value;

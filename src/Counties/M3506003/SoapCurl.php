@@ -2,21 +2,24 @@
 
 namespace NFePHP\NFSe\Counties\M3506003;
 
-use NFePHP\Common\Soap\SoapBase;
-use NFePHP\Common\Exception\SoapException;
-
 /**
- * Description of SoapCurlItabira
+ * SoapClient based in cURL class
  *
- * @author lucas
+ * @category  NFePHP
+ * @package   NFePHP\Common\Soap\SoapCurl
+ * @copyright NFePHP Copyright (c) 2016-2019
+ * @license   http://www.gnu.org/licenses/lgpl.txt LGPLv3+
+ * @license   https://opensource.org/licenses/MIT MIT
+ * @license   http://www.gnu.org/licenses/gpl.txt GPLv3+
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/sped-common for the canonical source repository
  */
-class SoapCurl extends SoapBase 
+
+use NFePHP\Common\Exception\SoapException;
+use NFePHP\Common\Soap\SoapCurl as SoapCurlBase;
+
+class SoapCurl extends SoapCurlBase
 {
-    /**
-     * @var array
-     */
-    protected $prefixes = [1 => 'soapenv', 2 => 'x'];
-    
     /**
      * Send soap message to url
      * @param string $url
@@ -40,9 +43,11 @@ class SoapCurl extends SoapBase
         $request = '',
         $soapheader = null
     ) {
+
+        // header('Content-type: text/xml');die($request);
+
         //check or create key files
         //before send request
-        $this->saveTemporarilyKeyFiles();
         $response = '';
         $envelope = $this->makeEnvelopeSoap(
             $request,
@@ -50,21 +55,35 @@ class SoapCurl extends SoapBase
             $soapver,
             $soapheader
         );
-        $msgSize = strlen($envelope);
-        
-        $this->httpver = CURL_HTTP_VERSION_1_0;
-        
-        $parameters[] = "Content-length: $msgSize";
-     
+
         if (!empty($action)) {
             $parameters[0] .= "action=$action";
         }
+
+
+        
+        /* preg_match('~<Signature(.*?)</Signature>~Usi', $envelope, $match);
+        if (count($match)) {
+            $envelope = str_replace($match[0], "", $envelope); //Removendo toda a tag Signature e colocando ela fora do RPS
+            $envelope = str_replace('</GerarNfseEnvio', trim($match[0]).'</GerarNfseEnvio', $envelope);
+        } */
+
+        // header('Content-type: text/xml');die($envelope);
+       /*  preg_match('/\<\!\[CDATA\[(.*)\]\]\>/ms', $envelope, $match);
+        if (count($match)) {
+            $envelope = str_replace($match[1], trim($match[1]), $envelope); //REMOVENDO O ESPACO DO CDATA
+        } */
+
+        
+        // header('Content-type: text/xml');die($envelope);
+
         $this->requestHead = implode("\n", $parameters);
         $this->requestBody = $envelope;
         
+
         try {
             $oCurl = curl_init();
-            $this->setCurlProxy($oCurl);
+            #$this->setCurlProxy($oCurl);
             curl_setopt($oCurl, CURLOPT_URL, $url);
             curl_setopt($oCurl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
             curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, $this->soaptimeout);
@@ -87,6 +106,7 @@ class SoapCurl extends SoapBase
             }
             curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
             if (!empty($envelope)) {
+                //  echo '<pre>'.print_r($envelope, true).'</pre>';die;
                 curl_setopt($oCurl, CURLOPT_POST, 1);
                 curl_setopt($oCurl, CURLOPT_POSTFIELDS, $envelope);
                 curl_setopt($oCurl, CURLOPT_HTTPHEADER, $parameters);
@@ -108,101 +128,14 @@ class SoapCurl extends SoapBase
                 $this->responseHead . "\n" . $this->responseBody
             );
         } catch (\Exception $e) {
-            throw SoapException::unableToLoadCurl($e->getMessage());
+            throw SoapException::unableToLoadCurl($e->getMessage(), '00');
         }
         if ($this->soaperror != '') {
-            throw SoapException::soapFault($this->soaperror . " [$url]", 500);
+            throw SoapException::soapFault($this->soaperror . " [$url]", '00');
         }
         if ($httpcode != 200) {
-            throw SoapException::soapFault(" [$url]" . $this->responseHead, 500);
+            throw SoapException::soapFault(" [$url]" . $this->responseHead, '00');
         }
         return $this->responseBody;
-    }
-    
-    /**
-     * Set proxy into cURL parameters
-     * @param resource $oCurl
-     */
-    private function setCurlProxy(&$oCurl)
-    {
-        if ($this->proxyIP != '') {
-            curl_setopt($oCurl, CURLOPT_HTTPPROXYTUNNEL, 1);
-            curl_setopt($oCurl, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
-            curl_setopt($oCurl, CURLOPT_PROXY, $this->proxyIP . ':' . $this->proxyPort);
-            if ($this->proxyUser != '') {
-                curl_setopt($oCurl, CURLOPT_PROXYUSERPWD, $this->proxyUser . ':' . $this->proxyPass);
-                curl_setopt($oCurl, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
-            }
-        }
-    }
-    
-    /**
-     * Mount soap envelope
-     * @param string $request
-     * @param array $namespaces
-     * @param int $soapVer
-     * @param \SoapHeader $header
-     * @return string
-     */
-    protected function makeEnvelopeSoap(
-        $request,
-        $namespaces,
-        $soapVer = SOAP_1_1,
-        $header = null
-    ) {
-        $prefix = $this->prefixes[$soapVer];
-        $envelopeAttributes = $this->getStringAttributesModify($namespaces);
-
-        $this->mountEnvelopString(
-            $prefix,
-            $envelopeAttributes,
-            $header,
-            $request
-        );
-        return $this->mountEnvelopString(
-            $prefix,
-            $envelopeAttributes,
-            $header,
-            $request
-        );
-    }
-    
-    /**
-     * Get attributes
-     * @param array $namespaces
-     * @return string
-     */
-    private function getStringAttributesModify($namespaces = [])
-    {
-        $envelopeAttributes = '';
-        foreach ($namespaces as $key => $value) {
-            $envelopeAttributes .= $key . '="' . $value . '" ';
-        }
-        return $envelopeAttributes;
-    }
-    
-    /**
-     * Create a envelop string
-     * @param string $envelopPrefix
-     * @param string $envelopAttributes
-     * @param string $header
-     * @param string $bodyContent
-     * @return string
-     */
-    private function mountEnvelopString(
-        $envelopPrefix,
-        $envelopAttributes = '',
-        $header = '',
-        $bodyContent = ''
-    ) {
-        return sprintf(
-            '<%s:Envelope %s>' . $header . '<%s:Body>%s</%s:Body></%s:Envelope>',
-            $envelopPrefix,
-            $envelopAttributes,
-            $envelopPrefix,
-            $bodyContent,
-            $envelopPrefix,
-            $envelopPrefix
-        );
     }
 }

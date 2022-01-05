@@ -37,7 +37,7 @@ class SoapCurl extends SoapCurlBase
         $url,
         $operation = '',
         $action = '',
-        $soapver = SOAP_1_2,
+        $soapver = SOAP_1_1,
         $parameters = [],
         $namespaces = [],
         $request = '',
@@ -52,12 +52,13 @@ class SoapCurl extends SoapCurlBase
             $soapver,
             $soapheader
         );
-        
+
         if (!empty($action)) {
             $parameters[0] .= "action=$action";
         }
         $this->requestHead = implode("\n", $parameters);
         $this->requestBody = $envelope;
+        die($envelope);exit;
 
         try {
             $oCurl = curl_init();
@@ -84,7 +85,7 @@ class SoapCurl extends SoapCurlBase
             }
             curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
             if (!empty($envelope)) {
-                 echo '<pre>'.print_r($envelope).'</pre>';die;
+                //  echo '<pre>'.print_r($envelope, true).'</pre>';die;
                 curl_setopt($oCurl, CURLOPT_POST, 1);
                 curl_setopt($oCurl, CURLOPT_POSTFIELDS, $envelope);
                 curl_setopt($oCurl, CURLOPT_HTTPHEADER, $parameters);
@@ -106,13 +107,13 @@ class SoapCurl extends SoapCurlBase
                 $this->responseHead . "\n" . $this->responseBody
             );
         } catch (\Exception $e) {
-            throw SoapException::unableToLoadCurl($e->getMessage());
+            throw SoapException::unableToLoadCurl($e->getMessage(), '00');
         }
         if ($this->soaperror != '') {
-            throw SoapException::soapFault($this->soaperror . " [$url]");
+            throw SoapException::soapFault($this->soaperror . " [$url]", '00');
         }
         if ($httpcode != 200) {
-            throw SoapException::soapFault(" [$url]" . $this->responseHead);
+            throw SoapException::soapFault(" [$url]" . $this->responseHead, '00');
         }
         return $this->responseBody;
     }

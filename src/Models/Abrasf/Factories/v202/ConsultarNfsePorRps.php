@@ -110,7 +110,7 @@ class ConsultarNfsePorRps extends ConsultarNfsePorRpsBase
         $dom->appendChild($root);
         $body = $dom->saveXML();
         $body = $this->clear($body);
-        #echo '<pre>'.print_r($body).'</pre>';die;
+        //echo '<pre>'.print_r($body).'</pre>';die;
         $this->validar($versao, $body, $this->schemeFolder, $xsd, '');
         return $body;
     }

@@ -543,7 +543,7 @@ class GerarNota extends Factory
 
         $body = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $dom->saveXML());
         $body = $this->clear($body);
-        #echo '<pre>'.print_r($body).'</pre>';die;
+        //echo '<pre>'.print_r($body).'</pre>';die;
         #$this->validar($versao, $body, "SIGISS/Londrina", $xsd, '');
         return $body;
     }

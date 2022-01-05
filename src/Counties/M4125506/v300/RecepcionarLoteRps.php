@@ -112,7 +112,7 @@ class RecepcionarLoteRps extends RecepcionarLoteRpsBase
             true
         );
         $body = $this->clear($body);
-        #echo '<pre>'.print_r($body).'</pre>';die;
+        //echo '<pre>'.print_r($body).'</pre>';die;
         $this->validar($versao, $body, $this->schemeFolder . "/SJP", $xsd, '');
         return $body;
     }

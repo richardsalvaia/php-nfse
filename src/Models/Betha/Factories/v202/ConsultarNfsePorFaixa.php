@@ -109,7 +109,7 @@ class ConsultarNfsePorFaixa extends ConsultarNfsePorFaixaBase
 
         $body = $dom->saveXML();
         $body = $this->clear($body);
-        #echo '<pre>'.print_r($this->schemeFolder).'</pre>';die;
+        //echo '<pre>'.print_r($this->schemeFolder).'</pre>';die;
         $this->validar($versao, $body, $this->schemeFolder, $xsd, '');
 
         return $body;

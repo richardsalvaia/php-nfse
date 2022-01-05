@@ -324,7 +324,7 @@ class Tools extends ToolsBase
      */
     protected function gerarNfseCommon(Factories\GerarNfse $fact, $rps, $url = '')
     {
-        $this->method = 'GerarNfse';
+        $this->method = 'gerarNfse';
         $fact->setXmlns($this->xmlns);
         $fact->setSchemeFolder($this->schemeFolder);
         $fact->setCodMun($this->config->cmun);

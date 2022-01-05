@@ -62,7 +62,7 @@ class ConsultarNumeroSerieCadastro extends Factory
 
         $body = $dom->saveXML();
         $body = $this->clear($body);
-        #echo '<pre>'.print_r($body).'</pre>';die;
+        //echo '<pre>'.print_r($body).'</pre>';die;
         return '<?xml version="1.0" encoding="ISO-8859-1"?>' . $body;
     }
 }

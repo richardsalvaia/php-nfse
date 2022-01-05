@@ -207,7 +207,7 @@ class ConsultarNfseServicoPrestado extends Base
             $body = $dom->saveXML();
             $body = $this->clear($body);
             $this->validar($versao, $body, $this->schemeFolder, $xsd, '');
-            #echo '<pre>' . print_r($body) . '</pre>';die;
+            //echo '<pre>' . print_r($body) . '</pre>';die;
 
             return $body;
         }

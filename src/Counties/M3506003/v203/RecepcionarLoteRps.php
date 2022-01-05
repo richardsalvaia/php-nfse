@@ -1,22 +1,18 @@
 <?php
-namespace NFePHP\NFSe\Models\Abrasf\Factories\v203;
+
+namespace NFePHP\NFSe\Counties\M3506003\v203;
+
 
 use NFePHP\Common\DOMImproved as Dom;
-use NFePHP\NFSe\Models\Abrasf\Factories\RecepcionarLoteRps as RecepcionarLoteRpsBase;
-use NFePHP\NFSe\Models\Abrasf\Factories\Signer;
+use NFePHP\NFSe\Counties\M3506003\RenderRps;
+use NFePHP\NFSe\Models\Abrasf\Factories\v203\RecepcionarLoteRps as RecepcionarLoteRps203;
+use NFePHP\NFSe\Counties\M3506003\SignerRps as SignerRps;
+use NFePHP\NFSe\Counties\M3506003\Tools\prefixos;
 
-class RecepcionarLoteRps extends RecepcionarLoteRpsBase
+class RecepcionarLoteRps extends RecepcionarLoteRps203
 {
-    /**
-     * Método usado para gerar o XML do Soap Request
-     * @param $versao
-     * @param $remetenteTipoDoc
-     * @param $remetenteCNPJCPF
-     * @param $inscricaoMunicipal
-     * @param $lote
-     * @param $rpss
-     * @return string
-     */
+    private static $canonical = [true, false, null, null];  
+        
     public function render(
         $versao,
         $remetenteTipoDoc,
@@ -25,29 +21,30 @@ class RecepcionarLoteRps extends RecepcionarLoteRpsBase
         $lote,
         $rpss
     ) {
-        $method = 'EnviarLoteRpsEnvio';
+
         $xsd = "nfse_v{$versao}";
         $qtdRps = count($rpss);
 
+
         $dom = new Dom('1.0', 'utf-8');
         $dom->formatOutput = false;
-        //Cria o elemento pai
-        $root = $dom->createElement('EnviarLoteRpsEnvio');
-        $root->setAttribute('xmlns', $this->xmlns);
+
+        $root = $dom->createElement('nfse:EnviarLoteRpsEnvio');
+        $root->setAttribute('xmlns:nfse', $prefixos['xmlns:nfse']);
 
         //Adiciona as tags ao DOM
         $dom->appendChild($root);
 
-        $loteRps = $dom->createElement('LoteRps');
+        $loteRps = $dom->createElement('nfs:LoteRps');        
+        
         $loteRps->setAttribute('Id', "lote{$lote}");
         $loteRps->setAttribute('versao', '2.03');
 
         $dom->appChild($root, $loteRps, 'Adicionando tag LoteRps a EnviarLoteRpsEnvio');
 
-
         $dom->addChild(
             $loteRps,
-            'NumeroLote',
+            'nfs:NumeroLote',
             $lote,
             true,
             "Numero do lote RPS",
@@ -55,12 +52,12 @@ class RecepcionarLoteRps extends RecepcionarLoteRpsBase
         );
 
         /* CPF CNPJ */
-        $cpfCnpj = $dom->createElement('CpfCnpj');
+        $cpfCnpj = $dom->createElement('nfs:CpfCnpj');
 
         if ($remetenteTipoDoc == '2') {
-            $tag = 'Cnpj';
+            $tag = 'nfs:Cnpj';
         } else {
-            $tag = 'Cpf';
+            $tag = 'nfs:Cpf';
         }
         //Adiciona o Cpf/Cnpj na tag CpfCnpj
         $dom->addChild(
@@ -68,7 +65,7 @@ class RecepcionarLoteRps extends RecepcionarLoteRpsBase
             $tag,
             $remetenteCNPJCPF,
             true,
-            "Cpf / Cnpj",
+            "nfs:Cpf / Cnpj",
             true
         );
         $dom->appChild($loteRps, $cpfCnpj, 'Adicionando tag CpfCnpj ao Prestador');
@@ -76,7 +73,7 @@ class RecepcionarLoteRps extends RecepcionarLoteRpsBase
         /* Inscrição Municipal */
         $dom->addChild(
             $loteRps,
-            'InscricaoMunicipal',
+            'nfs:InscricaoMunicipal',
             $inscricaoMunicipal,
             false,
             "Inscricao Municipal",
@@ -86,7 +83,7 @@ class RecepcionarLoteRps extends RecepcionarLoteRpsBase
         /* Quantidade de RPSs */
         $dom->addChild(
             $loteRps,
-            'QuantidadeRps',
+            'nfs:QuantidadeRps',
             $qtdRps,
             true,
             "Quantidade de Rps",
@@ -94,30 +91,32 @@ class RecepcionarLoteRps extends RecepcionarLoteRpsBase
         );
 
         /* Lista de RPS */
-        $listaRps = $dom->createElement('ListaRps');
+        $listaRps = $dom->createElement('nfs:ListaRps');
         $dom->appChild($loteRps, $listaRps, 'Adicionando tag ListaRps a LoteRps');
 
         foreach ($rpss as $rps) {
             RenderRps::appendRps($rps, $this->timezone, $this->certificate, $this->algorithm, $dom, $listaRps);
         }
 
+        $xml = $dom->saveXML();
 
-        //Parse para XML
-        $xml = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $dom->saveXML());
-
-        $body = Signer::sign(
+        $body = Signer::signPack(
             $this->certificate,
             $xml,
             'LoteRps',
             'Id',
             $this->algorithm,
-            [false, false, null, null],
+            [true, false, null, null],
             '',
             true
         );
-        $body = $this->clear($body);
 
-        $this->validar($versao, $body, $this->schemeFolder, $xsd, '');
+        $body = '<?xml version="1.0" encoding="utf-8"?>' . $body;        
+
+        $body = $this->clear($body);
+        $this->validar($versao, $body, $this->schemeFolder, $xsd, '');   
+        
+        $body = str_replace('nfs:EnviarLoteRpsEnvio', 'sis:EnviarLoteRpsEnvio', $body);
 
         return $body;
     }

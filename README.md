@@ -3,7 +3,7 @@
 
 *php-nfse* é um framework para geração dos RPS e comunicação das NFSe com as Prefeituras Municipais.
 
-*Este projeto é um fork do projeto original nfephp-org/sped-nfse <https://github.com/nfephp-org/sped-nfse> que foi descontinuado.*
+*Este projeto é um fork do projeto original nfephp-org/sped-nfse e adaptado para uso com o webservice da prefeitura de Bauru.*
 
 # NOTA IMPORTANTE - LEIA COM MUITA ATENÇÃO
 
@@ -161,6 +161,7 @@ Existem muitos "padrões" diferentes para a emissão de NFSe, além disso, cada 
 ## Municipios atendidos pelo Framework
 
 ### ABRASF (BETA-TESTS) 
+- Bauru (SP) ABRASF (modificado)
 - Salvador (BA) ABRASF (modificado)
 - Rio de Janeiro (RJ) ABRASF (modificado)
 - São José dos Campos (SP) GINFESv3

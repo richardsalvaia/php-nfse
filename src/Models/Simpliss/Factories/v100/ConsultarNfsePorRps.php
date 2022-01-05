@@ -95,7 +95,7 @@ class ConsultarNfsePorRps extends Factory
         $body = $dom->saveXML();
         $body = $this->clear($body);
         $this->validar($versao, $body, $this->schemeFolder, $xsd, '', $this->cmun);
-        echo '<pre>'.print_r('teste').'</pre>';die;
+        // echo '<pre>'.print_r('teste').'</pre>';die;
         return '<?xml version="1.0" encoding="utf-8"?>' . $body;
     }
 }

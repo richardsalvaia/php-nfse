@@ -423,7 +423,7 @@ class CartaCorrecaoNfseEnvio extends CartaCorrecaoNfseEnvioBase
         $xml = $dom->saveXML();
         $xml = $this->clear($xml);
         $this->validar($versao, $xml, $this->schemeFolder, 'schema_nfse_v300', '');
-        #echo '<pre>'.print_r($xml).'</pre>';die;
+        //echo '<pre>'.print_r($xml).'</pre>';die;
         return $xml;
     }
 }

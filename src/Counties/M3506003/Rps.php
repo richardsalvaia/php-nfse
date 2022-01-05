@@ -2,6 +2,8 @@
 
 namespace NFePHP\NFSe\Counties\M3506003;
 use NFePHP\NFSe\Models\Abrasf\Rps as RpsAbrasf;
+use NFePHP\NFSe\Counties\M3506003\SignerRps as Signer;
+use NFePHP\NFSe\Counties\M3506003\RenderRps as RenderRps;
 
 /**
  * Classe a construção do xml da NFSe para a
@@ -20,5 +22,7 @@ use NFePHP\NFSe\Models\Abrasf\Rps as RpsAbrasf;
 
 class Rps extends RpsAbrasf
 {
+
+    
 
 }

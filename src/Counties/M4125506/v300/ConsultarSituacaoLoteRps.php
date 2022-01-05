@@ -72,7 +72,7 @@ class ConsultarSituacaoLoteRps extends Factory
         $dom->appendChild($root);
         //Parse para XML
         $body = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $dom->saveXML());
-        #echo '<pre>'.print_r($body).'</pre>';die;
+        //echo '<pre>'.print_r($body).'</pre>';die;
         $this->validar($versao, $body, 'Abrasf/SJP', $xsd, '');
         return $body;
     }

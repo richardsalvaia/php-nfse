@@ -121,7 +121,7 @@ class CancelarNfse extends Factory
         $body = $this->clear($body);
         $this->validar($versao, $body, 'Publica', 'schema_nfse_v300', '');
 
-        #echo '<pre>' . print_r($body) . '</pre>';die;
+        //echo '<pre>' . print_r($body) . '</pre>';die;
 
         return $body;
     }

@@ -19,6 +19,7 @@ namespace NFePHP\NFSe\Counties\M3506003;
 
 use NFePHP\NFSe\Models\Abrasf\Tools as ToolsAbrasf;
 use NFePHP\NFSe\Models\Abrasf\Factories;
+use NFePHP\NFSe\Counties\M3506003\v203\gerarNfse as gerarNfse;
 
 class Tools extends ToolsAbrasf
 {
@@ -27,8 +28,8 @@ class Tools extends ToolsAbrasf
      * @var array
      */
     protected $url = [
-        1 => 'http://tbhomologacao.bauru.sp.gov.br/services/Abrasf23?wsdl',
-        2 => 'https://tributario.bauru.sp.gov.br/services/Abrasf23?wsdl'
+        1 => 'https://tributario.bauru.sp.gov.br/services/Abrasf23?wsdl',
+        2 => 'http://tbhomologacao.bauru.sp.gov.br/services/Abrasf23?wsdl'
     ];
     /**
      * County Namespace
@@ -79,10 +80,41 @@ class Tools extends ToolsAbrasf
      * @return string
      */
     public function recepcionarLoteRps($lote, $rpss) {
-        
-        $this->soapAction = 'http://tempuri.org/INFSEGeracao/';
-        
-        return parent::recepcionarLoteRps($lote, $rpss);
+
+        $class = "NFePHP\\NFSe\\Counties\\M3506003\\v{$this->versao}\\RecepcionarLoteRps";
+
+        $fact = new $class($this->certificate);
+        return $this->recepcionarLoteRpsCommon($fact, $rps);
+
+    }
+
+    /**
+     * @param v203\recepcionarLoteRpsCommon $fact
+     * @param $rps
+     * @param string $url
+     * @return string
+     */
+    protected function recepcionarLoteRpsCommon(v203\recepcionarLoteRps $fact, $rps, $url = '')
+    {
+        $this->method = 'recepcionarLoteRps';
+        $fact->setXmlns($this->xmlns);
+        $fact->setSchemeFolder($this->schemeFolder);
+        $fact->setCodMun($this->config->cmun);
+        $fact->setSignAlgorithm($this->algorithm);
+        $fact->setTimezone($this->timezone);
+
+        $message = $fact->render(
+            $versao,
+            'Cnpj',
+            '12957933000150',
+            $this->config->cmun,
+            1,
+            $ps
+        );
+
+        die($message);
+
+        return $this->sendRequest($url, $message);
     }
     
     /**
@@ -96,6 +128,41 @@ class Tools extends ToolsAbrasf
         $this->soapAction = 'http://tempuri.org/INFSEConsultas/';
         
         return parent::consultarLoteRps($protocolo);
+    }
+
+    /**
+     * @param $rps
+     * @return string
+     */
+    public function gerarNfse($rps)
+    {
+        $class = "NFePHP\\NFSe\\Counties\\M3506003\\v{$this->versao}\\GerarNfse";
+
+        $fact = new $class($this->certificate);
+        return $this->gerarNfseCommon($fact, $rps);
+    }
+
+    /**
+     * @param Factories\GerarNfse $fact
+     * @param $rps
+     * @param string $url
+     * @return string
+     */
+    protected function gerarNfseCommon(v203\GerarNfse $fact, $rps, $url = '')
+    {
+        $this->method = 'gerarNfse';
+        $fact->setXmlns($this->xmlns);
+        $fact->setSchemeFolder($this->schemeFolder);
+        $fact->setCodMun($this->config->cmun);
+        $fact->setSignAlgorithm($this->algorithm);
+        $fact->setTimezone($this->timezone);
+
+        $message = $fact->render(
+            $this->versao,
+            $rps
+        );
+
+        return $this->sendRequest($url, $message);
     }
 
     /**
@@ -113,7 +180,7 @@ class Tools extends ToolsAbrasf
             $url = $this->url[$this->config->tpAmb];
         }
         if (!is_object($this->soap)) {
-            $this->soap = new \NFePHP\NFSe\Common\SoapCurl($this->certificate);
+            $this->soap = new SoapCurl($this->certificate);
         }
         //formata o xml da mensagem para o padão esperado pelo webservice
         $dom = new \DOMDocument('1.0', 'UTF-8');
@@ -123,14 +190,14 @@ class Tools extends ToolsAbrasf
 
         $message = str_replace('<?xml version="1.0"?>', '', $dom->saveXML());
 
-        //O atributo xmlns precisa ser removido da tag <EnviarLoteRpsEnvio> pois
-        //o web service de Itabira não o reconhece
-        $messageText = str_replace('xmlns="http://www.abrasf.org.br/nfse.xsd"', '', $message);
+        $message = str_replace(' xmlns="http://www.abrasf.org.br/nfse.xsd"', '', $message);
         
         if ($this->withcdata) {
-            $messageText = $this->stringTransform($message);
+            $message = $this->stringTransform($message);
         }
-        $request = $this->makeRequest($messageText);
+
+        $request = $this->makeRequest($message);
+
         if (!count($this->params)) {
             $this->params = [
                 "Content-Type: text/xml;charset=utf-8;",
@@ -163,7 +230,8 @@ class Tools extends ToolsAbrasf
      */
     public function makeXml($rps)
     {
-        $class = "NFePHP\\NFSe\\Models\\Abrasf\\Factories\\v{$this->versao}\\RecepcionarLoteRps";
+
+        $class = "NFePHP\\NFSe\\Counties\\M3506003\\v{$this->versao}\\GerarNfse";
         $fact = new $class($this->certificate);
         
         $fact->setXmlns($this->xmlns);
@@ -189,7 +257,7 @@ class Tools extends ToolsAbrasf
         
         //O atributo xmlns precisa ser removido da tag <EnviarLoteRpsEnvio> pois
         //o web service de Itabira não o reconhece
-        $messageText = str_replace('<EnviarLoteRpsEnvio xmlns="http://www.abrasf.org.br/nfse.xsd">', '<EnviarLoteRpsEnvio>', $message);
+        // $messageText = str_replace('<EnviarLoteRpsEnvio xmlns="http://www.abrasf.org.br/nfse.xsd">', '<EnviarLoteRpsEnvio>', $message);
         
         if ($this->withcdata) {
             $messageText = $this->stringTransform($message);
@@ -206,7 +274,7 @@ class Tools extends ToolsAbrasf
      */
     protected function makeRequest($message)
     {
-        $versao = '2.03';
+        $versao = 203;
         switch ($this->versao) {
             case 100:
                 $request = "<{$this->method} xmlns=\"http://www.e-governeapps2.com.br/\">"
@@ -227,8 +295,8 @@ class Tools extends ToolsAbrasf
                 break;
             case 203:
                     $versao = '2.03';
-                    $request =
-                         "<nfse:{$this->method}>"
+                    $request = ""
+                        . "<nfse:{$this->method}>"
                         . "<xml>"
                         . "<![CDATA["
                         . $message
