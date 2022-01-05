@@ -29,7 +29,7 @@
     ],
     "require": {
         "php" : "~5.6|~7.0",
-        "richardsalvaia/sped-common" : "^5.0",
+        "richardsalvaia/sped-common" : "dev-master",
         "respect/validation": "^1.1"
     },
     "require-dev": {
