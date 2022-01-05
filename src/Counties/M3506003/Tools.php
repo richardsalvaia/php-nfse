@@ -340,10 +340,10 @@ class Tools extends ToolsAbrasf
         
         $this->soapAction = 'http://tempuri.org/INFSEGeracao/';
         
-        $class = "NFePHP\\NFSe\\Models\\Abrasf\\Factories\\v{$this->versao}\\CancelarNfse";
+        $class = "NFePHP\\NFSe\\Counties\\M3506003\\v{$this->versao}\\CancelarNfse";
         $fact = new $class($this->certificate);
         
-        $this->method = 'CancelarNfse';
+        $this->method = 'cancelarNfse';
         $fact->xmlns = $this->xmlns;
         $fact->schemeFolder = $this->schemeFolder;
         $fact->codMun = $this->config->cmun;

@@ -59,21 +59,6 @@ class SoapCurl extends SoapCurlBase
         if (!empty($action)) {
             $parameters[0] .= "action=$action";
         }
-
-
-        
-        /* preg_match('~<Signature(.*?)</Signature>~Usi', $envelope, $match);
-        if (count($match)) {
-            $envelope = str_replace($match[0], "", $envelope); //Removendo toda a tag Signature e colocando ela fora do RPS
-            $envelope = str_replace('</GerarNfseEnvio', trim($match[0]).'</GerarNfseEnvio', $envelope);
-        } */
-
-        // header('Content-type: text/xml');die($envelope);
-       /*  preg_match('/\<\!\[CDATA\[(.*)\]\]\>/ms', $envelope, $match);
-        if (count($match)) {
-            $envelope = str_replace($match[1], trim($match[1]), $envelope); //REMOVENDO O ESPACO DO CDATA
-        } */
-
         
         // header('Content-type: text/xml');die($envelope);
 
