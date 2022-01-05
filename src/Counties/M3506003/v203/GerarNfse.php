@@ -67,7 +67,7 @@ class GerarNfse  extends FactoryBase
         //Adiciona as tags ao DOM
         $dom->appendChild($root);
 
-        RenderRps::render($rps, $this->timezone, $dom, $root);
+        RenderRps::render($rps, $dom, $root);
 
          //Parse para XML
         $xml = $dom->saveXml();

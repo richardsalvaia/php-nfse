@@ -14,7 +14,7 @@ class RenderRps extends RenderRPS203
      * @param Rps $rps
      * @return string
      */
-    public static function render(Rps $rps, $timezone, &$dom, &$parent)
+    public static function render($rps, &$dom, &$parent)
     {
 
         self::$dom = $dom;
@@ -31,7 +31,7 @@ class RenderRps extends RenderRPS203
         //Identificação RPS
         $identificacaoRps = self::$dom->createElement('IdentificacaoRps');
 
-        $rps->infDataEmissao->setTimezone($timezone);
+        if (self::$timezone) $rps->infDataEmissao->setTimezone(self::$timezone);
 
         self::$dom->addChild(
             $identificacaoRps,
@@ -586,9 +586,14 @@ class RenderRps extends RenderRPS203
 
     public static function appendRps(
         $data,
+        \DateTimeZone $timezone,
+        Certificate $certificate,
+        $algorithm = OPENSSL_ALGO_SHA1,
         &$dom,
         &$parent
     ) {
+
+        self::$timezone = $timezone;
 
         if (is_object($data)) {
             //Gera a RPS

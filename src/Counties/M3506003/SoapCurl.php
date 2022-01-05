@@ -84,10 +84,12 @@ class SoapCurl extends SoapCurlBase
                 }
             }
             curl_setopt($oCurl, CURLOPT_SSLVERSION, $this->soapprotocol);
-            curl_setopt($oCurl, CURLOPT_SSLCERT, $this->tempdir . $this->certfile);
-            curl_setopt($oCurl, CURLOPT_SSLKEY, $this->tempdir . $this->prifile);
-            if (!empty($this->temppass)) {
-                curl_setopt($oCurl, CURLOPT_KEYPASSWD, $this->temppass);
+            if ($this->certfile) {
+                curl_setopt($oCurl, CURLOPT_SSLCERT, $this->tempdir . $this->certfile);
+                curl_setopt($oCurl, CURLOPT_SSLKEY, $this->tempdir . $this->prifile);
+                if (!empty($this->temppass)) {
+                    curl_setopt($oCurl, CURLOPT_KEYPASSWD, $this->temppass);
+                }
             }
             curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
             if (!empty($envelope)) {

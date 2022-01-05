@@ -3,7 +3,7 @@
 namespace NFePHP\NFSe\Models\Abrasf;
 
 /**
- * Classe para a comunicação com os webservices
+ * Classe para a comunicaÃ§Ã£o com os webservices
  * conforme o modelo ABRASF
  *
  * @category  NFePHP
@@ -102,7 +102,7 @@ class Tools extends ToolsBase
         if (!is_object($this->soap)) {
             $this->soap = new SoapCurl($this->certificate);
         }
-        //formata o xml da mensagem para o padão esperado pelo webservice
+        //formata o xml da mensagem para o padÃ£o esperado pelo webservice
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = false;
@@ -167,7 +167,7 @@ class Tools extends ToolsBase
                     . "</e:{$this->method}>";
                 break;
             default:
-                throw new \LogicException('Versão não suportada');
+                throw new \LogicException('VersÃ£o nÃ£o suportada');
         }
         return $request;
     }
@@ -322,7 +322,7 @@ class Tools extends ToolsBase
      * @param string $url
      * @return string
      */
-    protected function gerarNfseCommon(Factories\GerarNfse $fact, $rps, $url = '')
+    protected function gerarNfseCommon($fact, $rps, $url = '')
     {
         $this->method = 'gerarNfse';
         $fact->setXmlns($this->xmlns);
@@ -331,8 +331,8 @@ class Tools extends ToolsBase
         $fact->setSignAlgorithm($this->algorithm);
         $fact->setTimezone($this->timezone);
 
-        //O webservice de Goiania quando em modo de produção, você pode testar as NFSe
-        //Enviando a série TESTE, logo, está enviando para todos os provedores a Série TESTE por Default
+        //O webservice de Goiania quando em modo de produÃ§Ã£o, vocÃª pode testar as NFSe
+        //Enviando a sÃ©rie TESTE, logo, estÃ¡ enviando para todos os provedores a SÃ©rie TESTE por Default
         // https://docs.google.com/document/d/1B6L11ZGv2iXMfxCtIJxgzLaDCyeF-tCJ82ELysnJaTs/edit?pli=1
         if ($this->config->tpAmb == 2) {
             $rps->infSerie = 'TESTE';

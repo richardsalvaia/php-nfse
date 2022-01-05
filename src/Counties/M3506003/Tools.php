@@ -19,7 +19,8 @@ namespace NFePHP\NFSe\Counties\M3506003;
 
 use NFePHP\NFSe\Models\Abrasf\Tools as ToolsAbrasf;
 use NFePHP\NFSe\Models\Abrasf\Factories;
-use NFePHP\NFSe\Counties\M3506003\v203\gerarNfse as gerarNfse;
+use NFePHP\NFSe\Models\Abrasf\GerarNfse as GerarNfseBase;
+use NFePHP\NFSe\Counties\M3506003\v203\GerarNfse as GerarNfse;
 
 class Tools extends ToolsAbrasf
 {
@@ -87,35 +88,6 @@ class Tools extends ToolsAbrasf
         return $this->recepcionarLoteRpsCommon($fact, $rps);
 
     }
-
-    /**
-     * @param v203\recepcionarLoteRpsCommon $fact
-     * @param $rps
-     * @param string $url
-     * @return string
-     */
-    protected function recepcionarLoteRpsCommon(v203\recepcionarLoteRps $fact, $rps, $url = '')
-    {
-        $this->method = 'recepcionarLoteRps';
-        $fact->setXmlns($this->xmlns);
-        $fact->setSchemeFolder($this->schemeFolder);
-        $fact->setCodMun($this->config->cmun);
-        $fact->setSignAlgorithm($this->algorithm);
-        $fact->setTimezone($this->timezone);
-
-        $message = $fact->render(
-            $versao,
-            'Cnpj',
-            '12957933000150',
-            $this->config->cmun,
-            1,
-            $ps
-        );
-
-        die($message);
-
-        return $this->sendRequest($url, $message);
-    }
     
     /**
      * Os métodos que realizar operações no webservice precisam ser sobrescritos (Override)
@@ -148,7 +120,7 @@ class Tools extends ToolsAbrasf
      * @param string $url
      * @return string
      */
-    protected function gerarNfseCommon(v203\GerarNfse $fact, $rps, $url = '')
+    protected function gerarNfseCommon($fact, $rps, $url = '')
     {
         $this->method = 'gerarNfse';
         $fact->setXmlns($this->xmlns);

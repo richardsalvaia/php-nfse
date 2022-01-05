@@ -75,7 +75,7 @@ abstract class RenderRps
      * @param $dom
      * @param $parent
      */
-    protected static function render(Rps $rps, &$dom, &$parent)
+    protected static function render($rps, &$dom, &$parent)
     {
     }
 }

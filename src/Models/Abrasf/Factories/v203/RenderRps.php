@@ -66,7 +66,7 @@ class RenderRps extends RenderRPSBase
      * @param Rps $rps
      * @return string
      */
-    protected static function render(Rps $rps, &$dom, &$parent)
+    protected static function render($rps, &$dom, &$parent)
     {
         self::$dom = $dom;
         $root = self::$dom->createElement('Rps');
