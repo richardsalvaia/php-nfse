@@ -639,14 +639,14 @@ class RenderRps extends RenderRPSBase
             'RegimeEspecialTributacao',
             false
         ); 
-       /* self::$dom->addChild(
+       self::$dom->addChild(
             $infRPS,
             'OptanteSimplesNacional',
             $rps->infOptanteSimplesNacional,
             true,
             'OptanteSimplesNacional',
             false
-        );  */
+        ); 
         /* self::$dom->addChild(
             $infRPS,
             'IncentivoFiscal',
