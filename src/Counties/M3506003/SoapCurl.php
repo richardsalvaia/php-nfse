@@ -77,7 +77,7 @@ class SoapCurl extends SoapCurlBase
             curl_setopt($oCurl, CURLOPT_HTTP_VERSION, $this->httpver);
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, 0);
-            if (!$this->disablesec) {
+            /* if (!$this->disablesec) {
                 curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 2);
                 if (is_file($this->casefaz)) {
                     curl_setopt($oCurl, CURLOPT_CAINFO, $this->casefaz);
@@ -90,7 +90,7 @@ class SoapCurl extends SoapCurlBase
                 if (!empty($this->temppass)) {
                     curl_setopt($oCurl, CURLOPT_KEYPASSWD, $this->temppass);
                 }
-            }
+            } */
             curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
             if (!empty($envelope)) {
                 //  echo '<pre>'.print_r($envelope, true).'</pre>';die;
@@ -109,11 +109,11 @@ class SoapCurl extends SoapCurlBase
             curl_close($oCurl);
             $this->responseHead = trim(substr($response, 0, $headsize));
             $this->responseBody = trim(substr($response, $headsize));
-            $this->saveDebugFiles(
+            /* $this->saveDebugFiles(
                 $operation,
                 $this->requestHead . "\n" . $this->requestBody,
                 $this->responseHead . "\n" . $this->responseBody
-            );
+            ); */
         } catch (\Exception $e) {
             throw SoapException::unableToLoadCurl($e->getMessage(), '00');
         }
