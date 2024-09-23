@@ -58,6 +58,9 @@ class SoapCurl extends SoapCurlBase
             $soapver,
             $soapheader
         );
+
+        // \RS_Env::dump($namespaces);exit;
+
         $msgSize = strlen($envelope);
         $parameters = [
             "Content-Type: application/soap+xml;charset=utf-8;",
@@ -67,8 +70,9 @@ class SoapCurl extends SoapCurlBase
             $parameters[0] .= "action=$action";
         }
 
-        // header('Content-type: text/xml');
-        // die(self::clear($envelope)); 
+        // header('Content-type: text/xml');die(self::clear($envelope)); 
+        /* if (!empty($_SESSION['Admin_Auth']['usuario']) && $_SESSION['Admin_Auth']['usuario'] == 'contato@nsweb.com.br') {
+        } */
 
         $this->requestHead = implode("\n", $parameters);
         $this->requestBody = $envelope;
@@ -82,19 +86,24 @@ class SoapCurl extends SoapCurlBase
             curl_setopt($oCurl, CURLOPT_HTTP_VERSION, $this->httpver);
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, 0);
-            /* if (!$this->disablesec) {
+            if (!$this->disablesec) {
                 curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 2);
                 if (is_file($this->casefaz)) {
                     curl_setopt($oCurl, CURLOPT_CAINFO, $this->casefaz);
                 }
             }  
-            curl_setopt($oCurl, CURLOPT_SSLVERSION, $this->soapprotocol);
-            curl_setopt($oCurl, CURLOPT_SSLCERT, $this->tempdir . $this->certfile);
-            curl_setopt($oCurl, CURLOPT_SSLKEY, $this->tempdir . $this->prifile);
-            if (!empty($this->temppass)) {
-                curl_setopt($oCurl, CURLOPT_KEYPASSWD, $this->temppass);
-            }
-            */
+            /* curl_setopt($oCurl, CURLOPT_SSLVERSION, $this->soapprotocol);
+            curl_setopt($oCurl, CURLOPT_SSLCERT,APPLICATION_PATH. '/certs/production/A1/cert_1.crt');
+            curl_setopt($oCurl, CURLOPT_SSLKEY, APPLICATION_PATH. '/certs/production/A1/cert_1.key');
+            // if (!empty($this->temppass)) {
+                curl_setopt($oCurl, CURLOPT_KEYPASSWD, trim(file_get_contents(APPLICATION_PATH. '/certs/production/A1/cert_1.pass')));
+            // }  */
+
+            /* \RS_Env::dump(APPLICATION_PATH. '/certs/production/A1/cert_1.crt');
+            \RS_Env::dump(APPLICATION_PATH. '/certs/production/A1/cert_1.key');
+            \RS_Env::dump(trim(file_get_contents(APPLICATION_PATH. '/certs/production/A1/cert_1.pass')));
+            exit; */
+            
             curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
             if (!empty($envelope)) {
                 curl_setopt($oCurl, CURLOPT_POST, 1);

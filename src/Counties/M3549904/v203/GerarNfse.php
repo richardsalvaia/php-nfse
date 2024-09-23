@@ -40,7 +40,7 @@ class GerarNfse extends Factory
     }
 
     /**
-     * MÃ©todo usado para gerar o XML do Soap Request
+     * Metodo usado para gerar o XML do Soap Request
      * @param $versao
      * @param $rps
      * @return bool|string
@@ -54,22 +54,25 @@ class GerarNfse extends Factory
         $dom = new Dom('1.0', 'utf-8');
         $dom->formatOutput = false;
         //Cria o elemento pai
+        // $root = $dom->createElement('GerarNfse');
         $root = $dom->createElement('GerarNfseEnvio');
-        $root->setAttribute('xmlns', $this->xmlns);
+        // $root->setAttribute('xmlns', $this->xmlns);
 
         //Adiciona as tags ao DOM
+        /*$root0->appendChild($root);
+        $dom->appendChild($root0);*/
+        /*nathalia*/ 
+        
         $dom->appendChild($root);
 
         RenderRps::appendRps($rps, $this->timezone, $this->certificate, $this->algorithm, $dom, $root);
 
         //Parse para XML
-        /* $xml = substr(str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $dom->saveXML()), 1); */
         $xml = trim($this->clear($dom->saveXML()), PHP_EOL);
-        $xml = $this->clear($xml);
+        
         // $this->validar($versao, $xml, $this->schemeFolder, $xsd, ''); //O codigo CNAE de SJC usa mais de 7 caracteres, por isso nao valida
 
         // header('Content-Type: text/xml');die($xml);
-
         return $xml;
 
     }

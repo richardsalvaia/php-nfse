@@ -3,8 +3,8 @@
 namespace NFePHP\NFSe\Counties\M3549904;
 
 /**
- * Classe para a comunicação com os webservices da
- * Sao Joao da Boa Vista - MG
+ * Classe para a comunicacao com os webservices da
+ * Sao Jose dos Campos - SP
  * conforme o modelo Abrasf Simpliss 1.00
  *
  * @category  NFePHP
@@ -34,7 +34,8 @@ class Tools extends ToolsAbrasf
      * County Namespace
      * @var string
      */
-    protected $xmlns = 'http://www.abrasf.org.br/nfse.xsd';
+    /*nathalia */
+    protected $xmlns = 'http://nfse.abrasf.org.br';
     /**
      * Soap Version
      * @var int
@@ -72,8 +73,8 @@ class Tools extends ToolsAbrasf
     private $soapAction = 'http://tempuri.org/INFSEGeracao/';
     
     /**
-     * Os métodos que realizar operações no webservice precisam ser sobrescritos (Override)
-     * somente para setar o soapAction espefico de cada operação (INFSEGeracao, INFSEConsultas, etc.)
+     * Os metodos que realizar operacoes no webservice precisam ser sobrescritos (Override)
+     * somente para setar o soapAction espefico de cada operacao (INFSEGeracao, INFSEConsultas, etc.)
      * @param $lote
      * @param $rpss
      * @return string
@@ -88,8 +89,8 @@ class Tools extends ToolsAbrasf
     }
     
     /**
-     * Os métodos que realizar operações no webservice precisam ser sobrescritos (Override)
-     * somente para setar o soapAction espefico de cada operação (INFSEGeracao, INFSEConsultas, etc.)
+     * Os metodos que realizar operacoes no webservice precisam ser sobrescritos (Override)
+     * somente para setar o soapAction espefico de cada operacao (INFSEGeracao, INFSEConsultas, etc.)
      * @param $protocolo
      * @return string
      */
@@ -155,14 +156,14 @@ class Tools extends ToolsAbrasf
 
         // die($url);
         
-        //formata o xml da mensagem para o padão esperado pelo webservice
+        //formata o xml da mensagem para o padrao esperado pelo webservice
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = false;
         $dom->loadXML($message);
         $message = str_replace(['<?xml version="1.0" encoding="utf-8"?>', '<?xml version="1.0"?>'], '', $dom->saveXML());
 
-        $message = str_replace(' xmlns="http://www.abrasf.org.br/nfse.xsd"', '', $message);
+        // $message = str_replace(' xmlns="http://nfse.abrasf.org.br"', '', $message);
         
         if ($this->withcdata) {
             $message = $this->stringTransform($message);
@@ -212,7 +213,7 @@ class Tools extends ToolsAbrasf
     }
     
     /**
-     * Método que converto o objeto RPS em XML;
+     * Metodo que converto o objeto RPS em XML;
      * @param \NFePHP\NFSe\Models\Abrasf\Rps $rps
      * @return string Retorna o xml serializado
      */
@@ -246,7 +247,7 @@ class Tools extends ToolsAbrasf
         $message = str_replace('<?xml version="1.0"?>', '', $dom->saveXML());
         
         //O atributo xmlns precisa ser removido da tag <EnviarLoteRpsEnvio> pois
-        //o web service de Itabira não o reconhece
+        //o web service de Itabira nao o reconhece
         // $messageText = str_replace('<EnviarLoteRpsEnvio xmlns="http://www.abrasf.org.br/nfse.xsd">', '<EnviarLoteRpsEnvio>', $message);
         
         if ($this->withcdata) {
@@ -286,22 +287,18 @@ class Tools extends ToolsAbrasf
                     $versao = '2.03';
                     $request = ""
                         . "<nfse:{$this->method}>"
-                        // . "<xml>"
-                        // . "<![CDATA["
                         . $message
-                        // . "]]>"
-                        // . "</xml>"
                         . "</nfse:{$this->method}>";
             break;
             default:
-                throw new \LogicException('Versão não suportada');
+                throw new \LogicException('Versao nao suportada');
         }
 
         return $request;
     }  
     
     /**
-     * Retorna o nome da versão do Layout formatado
+     * Retorna o nome da versao do Layout formatado
      * @return string
      */
     private function getVersionString()

@@ -3,7 +3,7 @@
 namespace NFePHP\NFSe\Counties\M3549904;
 
 /**
- * Classe para a renderização dos RPS em XML
+ * Classe para a renderizaÃ§Ã£o dos RPS em XML
  * conforme o modelo Abrasf
  *
  * @category  NFePHP
@@ -34,13 +34,13 @@ class RenderRps extends RenderRPSBase
     {
         self::$dom = $dom;
         $root = self::$dom->createElement('Rps');
-
+        
         $infRPS = self::$dom->createElement("InfDeclaracaoPrestacaoServico");
         $infRPS->setAttribute('Id', "infRPS{$rps->infNumero}");
-
+        
         /** RPS Filha **/
         $rpsInf = self::$dom->createElement('Rps');
-        $rpsInf->setAttribute('Id', "rpsInf{$rps->infNumero}");
+        $rpsInf->setAttribute('Id', "rps{$rps->infNumero}");
 
         //Identificação RPS
         $identificacaoRps = self::$dom->createElement('IdentificacaoRps');
@@ -79,7 +79,7 @@ class RenderRps extends RenderRPSBase
             'DataEmissao',
             $rps->infDataEmissao->format('Y-m-d'),
             true,
-            'Data de Emissão do RPS',
+            'Data de EmissÃ£o do RPS',
             false
         );
 
@@ -130,7 +130,7 @@ class RenderRps extends RenderRPSBase
             'Competencia',
             $rps->infDataEmissao->format('Y-m-d'),
             true,
-            'Competencia Emissão do RPS',
+            'Competencia EmissÃ£o do RPS',
             false
         );
 
@@ -537,26 +537,30 @@ class RenderRps extends RenderRPSBase
             }
 
             //Contato
-            /* if ($rps->infTomador['tel'] != '' || $rps->infTomador['email'] != '') {
+            if ($rps->infTomador['tel'] != '' || $rps->infTomador['email'] != '') {
                 $contato = self::$dom->createElement('Contato');
-                self::$dom->addChild(
-                    $contato,
-                    'Telefone',
-                    $rps->infTomador['tel'],
-                    false,
-                    'Telefone Tomador',
-                    false
-                );
-                self::$dom->addChild(
-                    $contato,
-                    'Email',
-                    $rps->infTomador['email'],
-                    false,
-                    'Email Tomador',
-                    false
-                );
+                if ($rps->infTomador['tel'] != '') {
+                    self::$dom->addChild(
+                        $contato,
+                        'Telefone',
+                        $rps->infTomador['tel'],
+                        false,
+                        'Telefone Tomador',
+                        false
+                    );
+                }
+                if ($rps->infTomador['email'] != '') {
+                    self::$dom->addChild(
+                        $contato,
+                        'Email',
+                        $rps->infTomador['email'],
+                        false,
+                        'Email Tomador',
+                        false
+                    );
+                }
                 self::$dom->appChild($tomador, $contato, 'Adicionando tag Contato em Tomador');
-            } */
+            }
             self::$dom->appChild($infRPS, $tomador, 'Adicionando tag Tomador em infRPS');
         }
 
@@ -631,15 +635,15 @@ class RenderRps extends RenderRPSBase
         }
         /** FIM Construção Civil **/
 
-        self::$dom->addChild(
+        /*nathalia self::$dom->addChild(
             $infRPS,
             'RegimeEspecialTributacao',
             $rps->infRegimeEspecialTributacao,
             false,
             'RegimeEspecialTributacao',
             false
-        ); 
-       self::$dom->addChild(
+        );*/ 
+        self::$dom->addChild(
             $infRPS,
             'OptanteSimplesNacional',
             $rps->infOptanteSimplesNacional,
@@ -647,14 +651,14 @@ class RenderRps extends RenderRPSBase
             'OptanteSimplesNacional',
             false
         ); 
-        /* self::$dom->addChild(
+        /*nathalia */self::$dom->addChild(
             $infRPS,
             'IncentivoFiscal',
             $rps->infIncentivadorCultural,
             true,
             'IncentivoFiscal',
             false
-        ); */
+        );
 
         self::$dom->appChild($root, $infRPS, 'Adicionando tag infRPS em RPS');
         self::$dom->appChild($parent, $root, 'Adicionando tag RPS na ListaRps');
@@ -671,8 +675,8 @@ class RenderRps extends RenderRPSBase
         &$parent
     ) {
 
+        self::$algorithm = $algorithm; //Forçando aqui o XML que é validado no validador https://validar.iti.gov.br/relatorioDeConformidade.html / https://servicos.receita.fazenda.gov.br/servicos/assinadoc/ValidadorAssinaturas.app/valida.aspx
         self::$certificate = $certificate;
-        self::$algorithm = $algorithm;
         self::$timezone = $timezone;
 
         if (is_object($data)) {
@@ -680,16 +684,22 @@ class RenderRps extends RenderRPSBase
             $rootNode = self::render($data, $dom, $parent);
         }
 
+        if (!empty($_SESSION['Admin_Auth']['usuario']) && $_SESSION['Admin_Auth']['usuario'] == 'contato@nsweb.com.br') {
+            // header('Content-type: text/xml');die($dom->saveXML());
+        } 
+
         //Gera o nó com a assinatura
         $signatureNode = SignerRps::sign(
             self::$certificate,
-            'Rps',
+            'InfDeclaracaoPrestacaoServico',
             'Id',
             self::$algorithm,
-            [false, false, null, null],
+            [true, false, null, null],
             $dom,
             $rootNode
         );
+
+        // header('Content-type: text/xml'); die($dom->saveXML());
     }
 
 }
